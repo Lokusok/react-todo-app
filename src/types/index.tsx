@@ -7,3 +7,10 @@ export type Todo = {
   expiredAt: number;
   type: 'overdue' | 'process' | 'completed' | 'cancelled';
 }
+
+export type State = {
+  todos: Todo[],
+  search: {
+    query: string
+  }
+}

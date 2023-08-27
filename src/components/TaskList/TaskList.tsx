@@ -2,12 +2,16 @@ import { FC, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Task from '../Task/Task';
-import { Todo } from '../../types';
 import Loader from '../Loader/Loader';
 import Empty from '../Empty/Empty';
 
 import setTodos from '../../store/actions/set-todos';
 import todosApi from '../../api/todos';
+
+import { Todo } from '../../types';
+import { State } from '../../types';
+
+import setGlobalTodos from '../../store/thunks/get-todos';
 
 
 interface TaskListProps {
@@ -16,19 +20,37 @@ interface TaskListProps {
 
 const TaskList: FC<TaskListProps> = ({ type }) => {
   const [showLoader, setShowLoader] = useState<boolean>(true);
- 
-  const todos = useSelector((state: { todos: Todo[] }): Todo[] => state.todos);
-  console.log(todos);
+
+  const todos: Todo[] = useSelector((state: State): Todo[] => state.todos);
+  const searchQuery: string = useSelector((state: State): string => state.search.query);
   const dispatch = useDispatch();
 
+  console.log(`Searching: ${searchQuery}`);
+
+  // On first mount
   useEffect(() => {
+    setGlobalTodos(type, setShowLoader);
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      setGlobalTodos(type, setShowLoader);
+    }
+
     setShowLoader(true);
 
     todosApi.getTodos(type).then((todos) => {
-      dispatch(setTodos(todos));
+      const filterTodos = todos.filter((todo) =>
+        todo.title.toLowerCase().includes(searchQuery.toLowerCase())
+        &&
+        todo.type === type
+      );
+      console.log({ filterTodos });
+
+      dispatch(setTodos(filterTodos));
       setShowLoader(false);
     });
-  }, []);
+  }, [searchQuery]);
 
   return (
     <>
