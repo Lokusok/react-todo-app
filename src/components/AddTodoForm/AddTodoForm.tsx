@@ -1,10 +1,11 @@
 import { FC } from 'react';
-import { Todo } from '../../types';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import addTodo from '../../store/actions/add-todo';
+
 import { getTomorrowISODate } from '../../utils/date';
+
+import addTodo from '../../store/thunks/add-todo';
 
 
 type Inputs = {
@@ -25,20 +26,20 @@ const AddTodoForm: FC<FormProps> = ({ onClose }) => {
     const createdAt = Date.now();
     const expiredAt = new Date(info.date).getTime();
     const type = createdAt < expiredAt ? 'process' : 'overdue';
-    const todo: Todo = {
-      id: 4,
+    const userTodo = {
       title: info.title,
       description: info.description,
       createdAt: createdAt,
       expiredAt: expiredAt,
-      isCompleted: false,
       type: type,
     };
-    dispatch(addTodo(todo));
+
+    dispatch(addTodo(userTodo, 'process'));
+
     onClose();
   };
   const tomorrowDate = getTomorrowISODate();
-  
+
 
   return (
     <div className="px-6">

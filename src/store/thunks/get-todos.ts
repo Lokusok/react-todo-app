@@ -1,17 +1,18 @@
-import { Dispatch, SetStateAction } from 'react';
 import { Dispatch as DispatchRedux } from 'redux';
 
 import setTodos from "../actions/set-todos";
+import toggleUpdate from '../actions/toggle-update';
 import todosApi from "../../api/todos";
 
 
-const setGlobalTodos = (type: string, setShowLoader: Dispatch<SetStateAction<boolean>>) => {
+const setGlobalTodos = (type: string) => {
   return (dispatch: DispatchRedux) => {
-    setShowLoader(true);
+    dispatch(toggleUpdate(true));
 
-    todosApi.getTodos(type).then((todos) => {
+    todosApi.getTodosByType(type).then((todos) => {
+      console.log(`now todos: `, todos);
       dispatch(setTodos(todos));
-      setShowLoader(false);
+      dispatch(toggleUpdate(false));
     });
   }
 };

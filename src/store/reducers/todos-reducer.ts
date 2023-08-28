@@ -1,8 +1,9 @@
 import { Todo } from '../../types';
-import { ADD_TODO } from '../actions/add-todo';
+
 import { SET_TODOS } from '../actions/set-todos';
 import { DELETE_TODO } from '../actions/delete-todo';
 import { COMPLETE_TODO } from '../actions/complete-todo';
+import { TOGGLE_UPDATE } from '../actions/toggle-update';
 
 
 interface Action {
@@ -10,29 +11,50 @@ interface Action {
   payload: {
     todo: Todo,
     todos: Todo[],
-    todoId: number
+    todoId: number,
+    isUpdating: boolean
   }
 }
 
-const initialState: Todo[] = [];
+interface InitState {
+  isUpdating: boolean,
+  data: Todo[]
+}
+
+const initialState: InitState = {
+  isUpdating: false,
+  data: []
+};
 
 const todosReducer = (state = initialState, action: Action) => {
   switch (action.type) {
-    case ADD_TODO: {
-      return state.concat(action.payload.todo);
-    }
     case SET_TODOS: {
-      return action.payload.todos;
+      return {
+        ...state,
+        data: action.payload.todos
+      };
     }
     case DELETE_TODO: {
-      return state.map((todo) => 
-        todo.id === action.payload.todoId ? { ...todo, type: 'cancelled' } : todo
-      );
+      return {
+        ...state,
+        data: state.data.map((todo) =>
+          todo.id === action.payload.todoId ? { ...todo, type: 'cancelled' } : todo
+        )
+      };
     }
     case COMPLETE_TODO: {
-      return state.map((todo) => 
-        todo.id === action.payload.todoId ? { ...todo, type: 'completed' } : todo
-      );
+      return {
+        ...state,
+        data: state.data.map((todo) =>
+          todo.id === action.payload.todoId ? { ...todo, type: 'completed' } : todo
+        )
+      };
+    }
+    case TOGGLE_UPDATE: {
+      return {
+        ...state,
+        isUpdating: action.payload.isUpdating
+      }
     }
     default: {
       return state;

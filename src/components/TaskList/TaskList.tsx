@@ -19,43 +19,36 @@ interface TaskListProps {
 }
 
 const TaskList: FC<TaskListProps> = ({ type }) => {
-  const [showLoader, setShowLoader] = useState<boolean>(true);
-
-  const todos: Todo[] = useSelector((state: State): Todo[] => state.todos);
+  const isUpdating: boolean = useSelector((state: State): boolean => state.todos.isUpdating);
+  const todos: Todo[] = useSelector((state: State): Todo[] => state.todos.data);
   const searchQuery: string = useSelector((state: State): string => state.search.query);
   const dispatch = useDispatch();
 
-  console.log(`Searching: ${searchQuery}`);
-
-  // On first mount
+  // On tab changing
   useEffect(() => {
-    setGlobalTodos(type, setShowLoader);
-  }, []);
+    dispatch(setGlobalTodos(type));
+  }, [type]);
 
   useEffect(() => {
     if (searchQuery.length === 0) {
-      setGlobalTodos(type, setShowLoader);
+      dispatch(setGlobalTodos(type));
     }
 
-    setShowLoader(true);
-
-    todosApi.getTodos(type).then((todos) => {
+    todosApi.getTodosByType(type).then((todos) => {
       const filterTodos = todos.filter((todo) =>
         todo.title.toLowerCase().includes(searchQuery.toLowerCase())
         &&
         todo.type === type
       );
-      console.log({ filterTodos });
 
       dispatch(setTodos(filterTodos));
-      setShowLoader(false);
     });
   }, [searchQuery]);
 
   return (
     <>
       {
-        showLoader
+        isUpdating
           ?
           <div className="flex justify-center">
             <Loader />

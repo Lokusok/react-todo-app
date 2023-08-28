@@ -2,33 +2,33 @@ import { FC } from 'react';
 import { Todo } from '../../types';
 import { BsCheckCircleFill } from 'react-icons/bs';
 import { AiTwotoneDelete } from 'react-icons/ai';
-import { getFormattedDate } from '../../utils/date';
 
 import { useDispatch } from 'react-redux';
-import deleteTodo from '../../store/actions/delete-todo';
-import completeTodo from '../../store/actions/complete-todo';
+
+import setTypeTodo from '../../store/thunks/set-type-todo';
 
 import { getTaskBackgroundColor } from '../../utils/task';
+import { getFormattedDate } from '../../utils/date';
 
 
 const Task: FC<Todo> = ({ id, title, description, createdAt, expiredAt, type }) => {
   const dispatch = useDispatch();
 
-  const handleDelete = () => {
-    dispatch(deleteTodo(id));
+  const handleCancel = () => {
+    dispatch(setTypeTodo(id, 'cancelled', 'process'));
   };
 
   const handleComplete = () => {
-    dispatch(completeTodo(id));
+    dispatch(setTypeTodo(id, 'completed', 'process'));
   };
 
   return (
     <article className={`${getTaskBackgroundColor(type)} flex justify-between py-5 px-5 rounded relative`}>
       <span className="absolute top-0 left-5 -translate-y-full">
-        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Created at: {getFormattedDate(createdAt)}</span>
+        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Created at: {getFormattedDate(Number(createdAt))}</span>
       </span>
       <span className="absolute top-0 right-5 -translate-y-full">
-        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Expired at: {getFormattedDate(expiredAt)}</span>
+        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Expired at: {getFormattedDate(Number(expiredAt))}</span>
       </span>
 
       <div className="max-w-[70%] space-x-5 flex flex-row items-center">
@@ -43,7 +43,7 @@ const Task: FC<Todo> = ({ id, title, description, createdAt, expiredAt, type }) 
         &&
         <div className="flex space-x-4">
           <button onClick={handleComplete}><BsCheckCircleFill className="hover:opacity-80 active:opacity-50" size={24} color="#3B82F6" /></button>
-          <button onClick={handleDelete}><AiTwotoneDelete className="hover:opacity-80 active:opacity-50" size={24} color="red" /></button>
+          <button onClick={handleCancel}><AiTwotoneDelete className="hover:opacity-80 active:opacity-50" size={24} color="red" /></button>
         </div>
       }
     </article>
