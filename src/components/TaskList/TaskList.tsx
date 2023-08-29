@@ -1,5 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import Task from '../Task/Task';
 import Loader from '../Loader/Loader';
@@ -7,7 +8,8 @@ import Empty from '../Empty/Empty';
 
 import setTodos from '../../store/actions/set-todos';
 import setType from '../../store/actions/set-type';
-import overdueTodo from '../../store/actions/overdue-todo';
+import setActivePage from '../../store/actions/set-active-page';
+import setMaxPage from '../../store/actions/set-max-page';
 
 import todosApi from '../../api/todos';
 
@@ -16,9 +18,12 @@ import { State } from '../../types';
 
 import setGlobalTodos from '../../store/thunks/get-todos';
 import setAllTodos from '../../store/thunks/set-all-todos';
+import setTypeTodo from '../../store/thunks/set-type-todo';
 
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import Pagination from '../Pagination/Pagination';
 
 
 interface TaskListProps {
@@ -30,7 +35,18 @@ const TaskList: FC<TaskListProps> = ({ type }) => {
   const allTodos: Todo[] = useSelector((state: State): Todo[] => state.todos.allTodos);
   const todos: Todo[] = useSelector((state: State): Todo[] => state.todos.data);
   const searchQuery: string = useSelector((state: State): string => state.search.query);
+  const activePage: number = useSelector((state: State): number => state.todos.pages.active);
+
   const dispatch = useDispatch();
+  const params = useParams();
+
+  useEffect(() => {
+    if (!params.page) {
+      return;
+    }
+
+    dispatch(setActivePage(Number(params.page)));
+  }, [params]);
 
   // Setting all todos
   useEffect(() => {
@@ -40,8 +56,8 @@ const TaskList: FC<TaskListProps> = ({ type }) => {
 
     const interval = setInterval(() => {
       allTodos.forEach((todo: Todo) => {
-        if (nowDate > todo.expiredAt) {
-          dispatch(overdueTodo(todo.id));
+        if (todo.type === 'process' && nowDate > todo.expiredAt) {
+          (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setTypeTodo(todo.id, 'overdue'));
         }
       });
     }, minute);
@@ -49,52 +65,61 @@ const TaskList: FC<TaskListProps> = ({ type }) => {
     return () => clearInterval(interval);
   }, [todos]);
 
-  // On tab changing
   useEffect(() => {
     dispatch(setType(type));
-    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type));
-  }, [type]);
+    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type, params.page));
+  }, [type, activePage]);
 
   useEffect(() => {
     if (searchQuery.length === 0) {
-      (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type));
+      (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type, params.page));
     }
 
-    todosApi.getTodosByType(type).then((todos) => {
-      const filterTodos = todos.filter((todo) =>
+    todosApi.getTodosByType(type, params.page).then((data) => {
+      const filterTodos = data.todos.filter((todo) =>
         todo.title.toLowerCase().includes(searchQuery.toLowerCase())
         &&
         todo.type === type
       );
 
+      dispatch((setMaxPage(data.maxPage)));
       dispatch(setTodos(filterTodos));
     });
-  }, [searchQuery]);
+  }, [type, searchQuery]);
 
   return (
     <>
-      {
-        isUpdating
-          ?
-          <div className="flex justify-center">
-            <Loader />
-          </div>
-          :
-          <div className="flex flex-col mt-16 space-y-11 -translate-100">
-            {
-              todos.filter((todo) => todo.type === type).length === 0
-                ?
-                <Empty />
-                :
-                todos.filter((todo) => todo.type === type).map((todo) =>
-                  <Task
-                    key={todo.id}
-                    {...todo}
-                  />
-                )
-            }
-          </div>
-      }
+      <>
+        {
+          isUpdating
+            ?
+            <div className="flex justify-center">
+              <Loader />
+            </div>
+            :
+            <div className="flex flex-col mt-16 space-y-11 -translate-100">
+              {
+                todos.length === 0
+                  ?
+                  <Empty />
+                  :
+                  todos.map((todo) =>
+                    <Task
+                      key={todo.id}
+                      {...todo}
+                    />
+                  )
+              }
+            </div>
+        }
+      </>
+
+      <>
+        {
+          !searchQuery &&
+          <Pagination />
+        }
+      </>
     </>
   );
 };

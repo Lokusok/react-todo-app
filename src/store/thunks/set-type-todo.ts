@@ -23,6 +23,10 @@ const setTypeTodo = (id: number, type: string) => {
         todosApi.setCancelled(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType)));
         break;
       }
+      case 'overdue': {
+        todosApi.setOverdue(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType)));
+        break;
+      }
     }
   }
 };

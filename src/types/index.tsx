@@ -20,9 +20,14 @@ export type State = {
     isUpdating: boolean;
     activeType: 'overdue' | 'process' | 'completed' | 'cancelled' | '';
     allTodos: Todo[];
+    activePage: {
+      active: number;
+      max: number | null;
+    };
     data: Todo[];
-  },
+  };
+
   search: {
     query: string;
-  }
+  };
 }

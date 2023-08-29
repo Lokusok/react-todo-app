@@ -20,7 +20,7 @@ const addTodo = (todo: UserTodo) => {
       todosApi.getTodosByType(activeType)
         .then((data) => {
           console.log(data);
-          dispatch(setTodos(data));
+          dispatch(setTodos(data.todos));
         });
     });
   };

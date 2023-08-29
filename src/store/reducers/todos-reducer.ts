@@ -1,12 +1,12 @@
 import { Todo } from '../../types';
 
 import { SET_TODOS } from '../actions/set-todos';
-import { DELETE_TODO } from '../actions/delete-todo';
 import { OVERDUE_TODO } from '../actions/overdue-todo';
-import { COMPLETE_TODO } from '../actions/complete-todo';
 import { TOGGLE_UPDATE } from '../actions/toggle-update';
 import { SET_TYPE } from '../actions/set-type';
 import { SET_ALL_TODOS } from '../actions/set-all-todos';
+import { SET_ACTIVE_PAGE } from '../actions/set-active-page';
+import { SET_MAX_PAGE } from '../actions/set-max-page';
 
 import { AnyAction } from 'redux';
 
@@ -14,6 +14,10 @@ import { AnyAction } from 'redux';
 interface InitState {
   isUpdating: boolean;
   activeType: 'overdue' | 'process' | 'completed' | 'cancelled' | '';
+  pages: {
+    active: number;
+    max: number | null;
+  }
   allTodos: Todo[];
   data: Todo[];
 }
@@ -21,6 +25,10 @@ interface InitState {
 const initialState: InitState = {
   isUpdating: false,
   activeType: '',
+  pages: {
+    active: 1,
+    max: null,
+  },
   allTodos: [],
   data: []
 };
@@ -39,14 +47,6 @@ const todosReducer = (state = initialState, action: AnyAction) => {
         data: action.payload.todos
       };
     }
-    case DELETE_TODO: {
-      return {
-        ...state,
-        data: state.data.map((todo) =>
-          todo.id === action.payload.todoId ? { ...todo, type: 'cancelled' } : todo
-        )
-      };
-    }
     case OVERDUE_TODO: {
       return {
         ...state,
@@ -54,14 +54,6 @@ const todosReducer = (state = initialState, action: AnyAction) => {
           todo.id === action.payload.todoId ? { ...todo, type: 'overdue' } : todo
         )
       }
-    }
-    case COMPLETE_TODO: {
-      return {
-        ...state,
-        data: state.data.map((todo) =>
-          todo.id === action.payload.todoId ? { ...todo, type: 'completed' } : todo
-        )
-      };
     }
     case TOGGLE_UPDATE: {
       return {
@@ -73,6 +65,24 @@ const todosReducer = (state = initialState, action: AnyAction) => {
       return {
         ...state,
         activeType: action.payload.activeType
+      }
+    }
+    case SET_ACTIVE_PAGE: {
+      return {
+        ...state,
+        pages: {
+          ...state.pages,
+          active: action.payload.activePage
+        }
+      }
+    }
+    case SET_MAX_PAGE: {
+      return {
+        ...state,
+        pages: {
+          ...state.pages,
+          max: action.payload.maxPage
+        }
       }
     }
     default: {

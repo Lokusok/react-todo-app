@@ -1,6 +1,9 @@
+import { AnyAction } from 'redux';
+
+
 export const SET_TYPE: string = 'SET_TYPE';
 
-const setType = (type: string): { type: string, payload: { activeType: string } } => {
+const setType = (type: string): AnyAction => {
   return {
     type: SET_TYPE,
     payload: {

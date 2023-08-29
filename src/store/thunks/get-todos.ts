@@ -5,12 +5,12 @@ import toggleUpdate from '../actions/toggle-update';
 import todosApi from "../../api/todos";
 
 
-const setGlobalTodos = (type: string) => {
+const setGlobalTodos = (type: string, page: number | string | undefined) => {
   return (dispatch: Dispatch) => {
     dispatch(toggleUpdate(true));
 
-    todosApi.getTodosByType(type).then((todos) => {
-      dispatch(setTodos(todos));
+    todosApi.getTodosByType(type, page).then((data) => {
+      dispatch(setTodos(data.todos));
       dispatch(toggleUpdate(false));
     });
   }

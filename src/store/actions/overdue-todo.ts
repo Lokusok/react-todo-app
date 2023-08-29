@@ -1,6 +1,9 @@
+import { AnyAction } from 'redux';
+
+
 export const OVERDUE_TODO = 'OVERDUE_TODO';
 
-const overdueTodo = (todoId: number): { type: string, payload: { todoId: number } } => {
+const overdueTodo = (todoId: number): AnyAction => {
   return {
     type: OVERDUE_TODO,
     payload: {

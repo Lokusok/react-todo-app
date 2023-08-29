@@ -23,7 +23,7 @@ const App: FC = () => {
   return (
     <div className="app">
       {
-        location.pathname === '/' && <Navigate to="/process" />
+        location.pathname === '/' && <Navigate to="/process/1" />
       }
 
       <Modal title={'Add new task'} isShow={showModal} onClose={hideModal}>
@@ -45,15 +45,11 @@ const App: FC = () => {
         <Nav />
 
         <Routes>
-          <Route path="/overdue" element={<TaskList type={'overdue'} />}></Route>
-          <Route path="/process" element={<TaskList type={'process'} />}></Route>
-          <Route path="/completed" element={<TaskList type={'completed'} />}></Route>
-          <Route path="/cancelled" element={<TaskList type={'cancelled'} />}></Route>
+          <Route path="/overdue/:page?" element={<TaskList type={'overdue'} />}></Route>
+          <Route path="/process/:page?" element={<TaskList type={'process'} />}></Route>
+          <Route path="/completed/:page?" element={<TaskList type={'completed'} />}></Route>
+          <Route path="/cancelled/:page?" element={<TaskList type={'cancelled'} />}></Route>
         </Routes>
-
-
-        {/* Пагинация */}
-        <Pagination />
       </div>
     </div>
   );

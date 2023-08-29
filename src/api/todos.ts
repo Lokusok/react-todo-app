@@ -12,8 +12,8 @@ const todosApi = {
       .then((res) => res.data);
   },
 
-  getTodosByType(type: string): Promise<Todo[]> {
-    return ax.get(`tasks/${type}`)
+  getTodosByType(type: string, page: number | string | undefined): Promise<object> {
+    return ax.get(`tasks/${type}/${page}`)
       .then((res) => res.data);
   },
 
@@ -23,6 +23,10 @@ const todosApi = {
 
   setCancelled(id: number): Promise<object> {
     return ax.put(`cancel/${id}`);
+  },
+
+  setOverdue(id: number): Promise<object> {
+    return ax.put(`overdue/${id}`);
   },
 
   appendTodo(todo: UserTodo): Promise<object> {
