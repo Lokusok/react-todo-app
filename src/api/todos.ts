@@ -2,13 +2,16 @@ import { Todo, UserTodo } from '../types';
 import axios from 'axios';
 
 
-
-
 const ax = axios.create({
   baseURL: 'http://127.0.0.1:4000/'
 })
 
 const todosApi = {
+  getAllTodos(): Promise<Todo[]> {
+    return ax.get('tasks')
+      .then((res) => res.data);
+  },
+
   getTodosByType(type: string): Promise<Todo[]> {
     return ax.get(`tasks/${type}`)
       .then((res) => res.data);

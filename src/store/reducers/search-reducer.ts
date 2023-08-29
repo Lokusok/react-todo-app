@@ -1,11 +1,6 @@
 import { SET_SEARCH_QUERY } from '../actions/set-search-query';
+import { AnyAction } from 'redux';
 
-interface Action {
-  type: string;
-  payload: {
-    query: string;
-  };
-}
 
 interface InitData {
   query: string;
@@ -15,7 +10,7 @@ const initialState: InitData = {
   query: ''
 };
 
-const searchReducer = (state: InitData = initialState, action: Action) => {
+const searchReducer = (state: InitData = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_SEARCH_QUERY: {
       return {

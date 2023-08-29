@@ -1,11 +1,13 @@
-import { UserTodo } from "../../types";
+import { UserTodo, State } from '../../types';
 
-import todosApi from "../../api/todos";
-import setTodos from "../actions/set-todos";
+import { Dispatch } from 'redux';
+
+import todosApi from '../../api/todos';
+import setTodos from '../actions/set-todos';
 
 
-const addTodo = (todo: UserTodo, pageType: string) => {
-  return (dispatch) => {
+const addTodo = (todo: UserTodo) => {
+  return (dispatch: Dispatch, getState: () => State) => {
     todosApi.appendTodo({
       title: todo.title,
       description: todo.description,
@@ -13,7 +15,9 @@ const addTodo = (todo: UserTodo, pageType: string) => {
       expiredAt: todo.expiredAt,
       type: todo.type,
     }).then(() => {
-      todosApi.getTodosByType(pageType)
+      const activeType = getState().todos.activeType;
+
+      todosApi.getTodosByType(activeType)
         .then((data) => {
           console.log(data);
           dispatch(setTodos(data));

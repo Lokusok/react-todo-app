@@ -18,6 +18,8 @@ export type UserTodo = {
 export type State = {
   todos: {
     isUpdating: boolean;
+    activeType: 'overdue' | 'process' | 'completed' | 'cancelled' | '';
+    allTodos: Todo[];
     data: Todo[];
   },
   search: {

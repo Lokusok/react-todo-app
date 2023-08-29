@@ -1,4 +1,4 @@
-export const TOGGLE_UPDATE = 'TOGGLE_UPDATE';
+export const TOGGLE_UPDATE: string = 'TOGGLE_UPDATE';
 
 const toggleUpdate = (isUpdating: boolean): { type: string, payload: { isUpdating: boolean } } => {
   return {

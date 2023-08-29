@@ -9,10 +9,11 @@ import TaskList from './components/TaskList/TaskList';
 import Search from './components/Search/Search';
 
 import { useState, FC } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 
 const App: FC = () => {
+  const location = useLocation();
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const hideModal = () => {
@@ -21,6 +22,10 @@ const App: FC = () => {
 
   return (
     <div className="app">
+      {
+        location.pathname === '/' && <Navigate to="/process" />
+      }
+
       <Modal title={'Add new task'} isShow={showModal} onClose={hideModal}>
         <AddTodoForm onClose={hideModal} />
       </Modal>

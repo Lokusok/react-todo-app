@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Todo } from '../../types';
+import { Todo, State } from '../../types';
 import { BsCheckCircleFill } from 'react-icons/bs';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
@@ -10,16 +10,19 @@ import setTypeTodo from '../../store/thunks/set-type-todo';
 import { getTaskBackgroundColor } from '../../utils/task';
 import { getFormattedDate } from '../../utils/date';
 
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
 
 const Task: FC<Todo> = ({ id, title, description, createdAt, expiredAt, type }) => {
   const dispatch = useDispatch();
 
   const handleCancel = () => {
-    dispatch(setTypeTodo(id, 'cancelled', 'process'));
+    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setTypeTodo(id, 'cancelled'));
   };
 
   const handleComplete = () => {
-    dispatch(setTypeTodo(id, 'completed', 'process'));
+    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setTypeTodo(id, 'completed'));
   };
 
   return (

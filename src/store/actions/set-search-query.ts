@@ -1,4 +1,4 @@
-export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
+export const SET_SEARCH_QUERY: string = 'SET_SEARCH_QUERY';
 
 const setSearchQuery = (query: string): { type: string, payload: { query: string } } => {
   return {

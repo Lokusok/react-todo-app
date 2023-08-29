@@ -1,4 +1,4 @@
-export const DELETE_TODO = 'DELETE_TODO';
+export const DELETE_TODO: string = 'DELETE_TODO';
 
 const deleteTodo = (todoId: number): { type: string, payload: { todoId: number } } => {
   return {
