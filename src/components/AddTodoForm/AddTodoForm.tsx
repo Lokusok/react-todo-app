@@ -37,7 +37,6 @@ const AddTodoForm: FC<FormProps> = ({ onClose }) => {
       expiredAt: expiredAt,
       type: type,
     };
-
     (dispatch as ThunkDispatch<State, unknown, AnyAction>)(addTodo(userTodo));
 
     onClose();
