@@ -67,7 +67,7 @@ const TaskList: FC<TaskListProps> = ({ type }) => {
 
   useEffect(() => {
     dispatch(setType(type));
-    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type, params.page));
+    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type, activePage));
   }, [type, activePage]);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const TaskList: FC<TaskListProps> = ({ type }) => {
       (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(type, params.page));
     }
 
-    todosApi.getTodosByType(type, params.page).then((data) => {
+    todosApi.getTodosByType(type, searchQuery.length === 0 ? params.page : null).then((data) => {
       const filterTodos = data.todos.filter((todo) =>
         todo.title.toLowerCase().includes(searchQuery.toLowerCase())
         &&

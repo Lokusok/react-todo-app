@@ -1,7 +1,10 @@
 import { FC } from 'react';
+import { Todo, State } from '../../types';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import { getTomorrowISODate } from '../../utils/date';
 
@@ -21,11 +24,12 @@ interface FormProps {
 const AddTodoForm: FC<FormProps> = ({ onClose }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
   const dispatch = useDispatch();
+  const todos: Todo[] = useSelector((state: State): Todo[] => state.todos.allTodos);
 
   const onSubmit: SubmitHandler<Inputs> = (info) => {
     const createdAt = Date.now();
     const expiredAt = new Date(info.date).getTime();
-    const type = createdAt < expiredAt ? 'process' : 'overdue';
+    const type: 'process' | 'overdue' = createdAt < expiredAt ? 'process' : 'overdue';
     const userTodo = {
       title: info.title,
       description: info.description,
@@ -34,12 +38,15 @@ const AddTodoForm: FC<FormProps> = ({ onClose }) => {
       type: type,
     };
 
-    dispatch(addTodo(userTodo, 'process'));
+    (dispatch as ThunkDispatch<State, unknown, AnyAction>)(addTodo(userTodo));
 
     onClose();
   };
   const tomorrowDate = getTomorrowISODate();
-
+  const isUnique = (value: string): boolean => {
+    const res: boolean = !todos.some((todo: Todo): boolean => todo.title === value);
+    return res;
+  };
 
   return (
     <div className="px-6">
@@ -47,9 +54,21 @@ const AddTodoForm: FC<FormProps> = ({ onClose }) => {
         <div className="mt-6">
           <div className="mb-6">
             <label>
-              <span className="text-md font-semibold">Enter title of task: <span className={`${errors?.title && 'underline'}`}>(Required)</span></span>
+              <span className="text-md font-semibold">
+                Enter title of task: 
+                <span className={`${errors?.title?.type === 'required' && 'underline'}`}>
+                  (Required)
+                </span>
+                {errors?.title?.type === 'validate' && <>&nbsp;<span className="underline">Need unique title</span></>}
+              </span>
               <input
-                {...register('title', { required: 'Required field!' })}
+                {...register(
+                  'title',
+                  {
+                    required: 'Required field!',
+                    validate: isUnique,
+                  },
+                )}
                 className={`${errors?.title && 'border-red-400'} mt-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`} type="text"
                 placeholder="Title" />
             </label>
@@ -87,8 +106,8 @@ const AddTodoForm: FC<FormProps> = ({ onClose }) => {
           <button type="button" className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:opacity-70" onClick={onClose}>Cancel</button>
           <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-green-200 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-green-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:opacity-70">Accept</button>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 

@@ -13,18 +13,19 @@ const setTypeTodo = (id: number, type: string) => {
     dispatch(toggleUpdate(true));
 
     const activeType = getState().todos.activeType;
+    const activePage = getState().todos.pages.active;
     
     switch (type) {
       case 'completed': {
-        todosApi.setCompleted(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType)));
+        todosApi.setCompleted(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType, activePage)));
         break;
       }
       case 'cancelled': {
-        todosApi.setCancelled(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType)));
+        todosApi.setCancelled(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType, activePage)));
         break;
       }
       case 'overdue': {
-        todosApi.setOverdue(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType)));
+        todosApi.setOverdue(id).then(() => (dispatch as ThunkDispatch<State, unknown, AnyAction>)(setGlobalTodos(activeType, activePage)));
         break;
       }
     }

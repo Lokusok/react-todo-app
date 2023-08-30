@@ -11,7 +11,7 @@ const setTodos = (todos: Todo[]): AnyAction => {
     payload: {
       todos: todos
     }
-  }
+  };
 };
 
 export default setTodos;

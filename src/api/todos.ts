@@ -12,7 +12,7 @@ const todosApi = {
       .then((res) => res.data);
   },
 
-  getTodosByType(type: string, page: number | string | undefined): Promise<object> {
+  getTodosByType(type: string, page: number | string | null | undefined): Promise<{ todos: Todo[], maxPage: number }> {
     return ax.get(`tasks/${type}/${page}`)
       .then((res) => res.data);
   },

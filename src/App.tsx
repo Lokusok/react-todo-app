@@ -4,7 +4,6 @@ import Nav from './components/Nav/Nav'
 import Modal from './components/Modal/Modal';
 import AddTodoForm from './components/AddTodoForm/AddTodoForm';
 import TriggerAddTodoModal from './components/TriggerAddTodoModal/TriggerAddTodoModal';
-import Pagination from './components/Pagination/Pagination';
 import TaskList from './components/TaskList/TaskList';
 import Search from './components/Search/Search';
 

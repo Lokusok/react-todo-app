@@ -20,7 +20,7 @@ export type State = {
     isUpdating: boolean;
     activeType: 'overdue' | 'process' | 'completed' | 'cancelled' | '';
     allTodos: Todo[];
-    activePage: {
+    pages: {
       active: number;
       max: number | null;
     };

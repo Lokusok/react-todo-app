@@ -27,11 +27,11 @@ const Task: FC<Todo> = ({ id, title, description, createdAt, expiredAt, type }) 
 
   return (
     <article className={`${getTaskBackgroundColor(type)} flex justify-between py-5 px-5 rounded relative`}>
-      <span className="absolute top-0 left-5 -translate-y-full">
-        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Created at: {getFormattedDate(Number(createdAt))}</span>
+      <span className="absolute top-0 left-0 md:left-5 -translate-y-full">
+        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 underline">Created at: {getFormattedDate(Number(createdAt))}</span>
       </span>
-      <span className="absolute top-0 right-5 -translate-y-full">
-        <span className="text-sm   font-normal text-gray-500 dark:text-gray-400 underline">Expired at: {getFormattedDate(Number(expiredAt))}</span>
+      <span className="absolute top-0 right-0 md:right-5 -translate-y-full">
+        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 underline">Expired at: {getFormattedDate(Number(expiredAt))}</span>
       </span>
 
       <div className="max-w-[70%] space-x-5 flex flex-row items-center">
