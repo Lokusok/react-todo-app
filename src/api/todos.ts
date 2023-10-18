@@ -1,20 +1,20 @@
 import { Todo, UserTodo } from '../types';
 import axios from 'axios';
 
-
 const ax = axios.create({
-  baseURL: 'https://todo-api-3ke7.onrender.com/'
+  baseURL: 'https://todo-api-3ke7.onrender.com',
 });
 
 const todosApi = {
   getAllTodos(): Promise<Todo[]> {
-    return ax.get('tasks')
-      .then((res) => res.data);
+    return ax.get('tasks').then((res) => res.data);
   },
 
-  getTodosByType(type: string, page: number | string | null | undefined): Promise<{ todos: Todo[], maxPage: number }> {
-    return ax.get(`tasks/${type}/${page}`)
-      .then((res) => res.data);
+  getTodosByType(
+    type: string,
+    page: number | string | null | undefined
+  ): Promise<{ todos: Todo[]; maxPage: number }> {
+    return ax.get(`tasks/${type}/${page}`).then((res) => res.data);
   },
 
   setCompleted(id: number): Promise<object> {
@@ -35,7 +35,7 @@ const todosApi = {
       description: todo.description,
       createdAt: todo.createdAt,
       expiredAt: todo.expiredAt,
-      type: todo.type
+      type: todo.type,
     });
   },
 };
